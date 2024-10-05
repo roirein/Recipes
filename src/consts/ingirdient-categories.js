@@ -1,0 +1,18 @@
+module.exports = [
+  "Baking Essentials",
+  "Spices",
+  "Oils and Fats",
+  "Dairy",
+  "Sweeteners",
+  "Grains",
+  "Pasta",
+  "Proteins",
+  "Vegetables",
+  "Fruits",
+  "Canned and Jarred",
+  "Sauces",
+  "Nuts and Seeds",
+  "Seafood",
+  "Beverages",
+  "Meat",
+];
