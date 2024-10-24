@@ -12,7 +12,7 @@ Instruction.init(
       unique: true,
       primaryKey: true,
     },
-    recipe: {
+    recipeId: {
       type: Sequelize.UUID,
       allowNull: false,
     },

@@ -10,4 +10,6 @@ module.exports = [
   "Lactose Free",
   "Peanut Free",
   "Sesame Free",
+  "High Fat",
+  "High Sugar",
 ];

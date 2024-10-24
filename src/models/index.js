@@ -15,14 +15,20 @@ Tag.belongsToMany(Recipe, { through: "RecipeTags" });
 Recipe.belongsToMany(MealType, { through: "RecipeMeals" });
 MealType.belongsToMany(Recipe, { through: "RecipeMeals" });
 
-Recipe.hasMany(RecipeIngredient, { foreignKey: "recipe" });
-RecipeIngredient.belongsTo(Recipe);
+Recipe.hasMany(RecipeIngredient, { foreignKey: "recipeId", sourceKey: "id" });
+RecipeIngredient.belongsTo(Recipe, { foreignKey: "recipeId", targetKey: "id" });
 
-Ingredient.hasMany(RecipeIngredient, { foreignKey: "ingredient" });
-RecipeIngredient.belongsTo(Ingredient);
+Ingredient.hasMany(RecipeIngredient, {
+  foreignKey: "ingredientId",
+  sourceKey: "id",
+});
+RecipeIngredient.belongsTo(Ingredient, {
+  foreignKey: "ingredientId",
+  targetKey: "id",
+});
 
-Recipe.hasMany(Instruction, { foreignKey: "recipe" });
-Instruction.belongsTo(Recipe);
+Recipe.hasMany(Instruction, { foreignKey: "recipeId", sourceKey: "id" });
+Instruction.belongsTo(Recipe, { foreignKey: "recipeId", targetKey: "id" });
 
 module.exports = {
   Cuisine,

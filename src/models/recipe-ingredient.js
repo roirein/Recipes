@@ -13,21 +13,12 @@ RecipeIngredient.init(
       unique: true,
       primaryKey: true,
     },
-    recipe: {
-      type: Sequelize.UUID,
-      allowNull: false,
-    },
-    ingredient: {
-      type: Sequelize.UUID,
-      allowNull: false,
-    },
     amount: {
       type: DataTypes.DOUBLE,
       allowNull: false,
     },
     unit: {
       type: DataTypes.STRING,
-      allowNull: false,
       validate: {
         isIn: [units],
       },

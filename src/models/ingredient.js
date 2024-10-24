@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes, Model } = require("sequelize");
 const sequelize = require("../db/db");
 const ingirdientCategories = require("../consts/ingirdient-categories");
+const ingridients = require("../consts/ingridients");
 
 class Ingredient extends Model {}
 
@@ -19,6 +20,7 @@ Ingredient.init(
       unique: true,
       validate: {
         len: [3, 20],
+        isIn: [Object.values(ingridients).flat()],
       },
     },
     category: {
