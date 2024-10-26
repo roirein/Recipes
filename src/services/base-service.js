@@ -1,5 +1,5 @@
+const BaseRepository = require("../data-access/repositories/base-repository");
 const UnitOfWork = require("../data-access/units-of-works/unit-of-work");
-const BaseRepository = require("../repositories/base-repository");
 
 class BaseService {
   #repository;
@@ -19,6 +19,10 @@ class BaseService {
    */
   get repositroy() {
     return this.#repository;
+  }
+
+  get unitOfWork() {
+    return this.#unitOfWork;
   }
 
   /**

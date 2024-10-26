@@ -1,10 +1,12 @@
+const sequelize = require("../../db/db");
+
 class UnitOfWork {
   #dbContext;
   #repositoriesMap;
   #transaction;
 
-  constructor(repositoriesMap, dbContext) {
-    this.#dbContext = dbContext;
+  constructor(repositoriesMap) {
+    this.#dbContext = sequelize;
     this.#repositoriesMap = repositoriesMap;
     this.#transaction = null;
   }
@@ -32,6 +34,7 @@ class UnitOfWork {
   async beginTransaction() {
     const transaction = await this.dbContext.transaction();
     this.transaction = transaction;
+    return transaction;
   }
 
   async commitTransaction() {
