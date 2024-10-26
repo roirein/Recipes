@@ -27,6 +27,10 @@ class BaseRepository {
     //type of record data will be decided later
     return await this.#model.create(recordData);
   }
+
+  async findAll(query = {}) {
+    return await this.#model.findAll(query);
+  }
 }
 
 module.exports = BaseRepository;
