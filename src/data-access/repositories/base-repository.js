@@ -23,9 +23,18 @@ class BaseRepository {
    * @param {object} recordData - data for create a record
    * @returns {Promise<Model<T>>} -returns newly created record
    */
-  async createRecord(recordData) {
+  async createRecord(recordData, query = {}) {
     //type of record data will be decided later
-    return await this.#model.create(recordData);
+    console.log(recordData, query);
+    return await this.#model.create(recordData, query);
+  }
+
+  async findAll(query = {}) {
+    return await this.#model.findAll(query);
+  }
+
+  async findOne(query) {
+    return await this.#model.findOne(query);
   }
 }
 

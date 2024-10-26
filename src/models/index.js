@@ -27,21 +27,13 @@ Recipe.belongsToMany(MealType, {
 });
 MealType.belongsToMany(Recipe, { through: "RecipeMeals" });
 
-Recipe.hasMany(RecipeIngredient, {
+Recipe.belongsToMany(Ingredient, {
+  through: RecipeIngredient,
   foreignKey: "recipeId",
-  sourceKey: "id",
-  as: "ingredients",
 });
-RecipeIngredient.belongsTo(Recipe, { foreignKey: "recipeId", targetKey: "id" });
-
-Ingredient.hasMany(RecipeIngredient, {
+Ingredient.belongsToMany(Recipe, {
+  through: RecipeIngredient,
   foreignKey: "ingredientId",
-  sourceKey: "id",
-});
-RecipeIngredient.belongsTo(Ingredient, {
-  foreignKey: "ingredientId",
-  targetKey: "id",
-  as: "ingredient",
 });
 
 Recipe.hasMany(Instruction, {
