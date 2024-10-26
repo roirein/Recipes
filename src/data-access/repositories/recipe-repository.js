@@ -6,9 +6,9 @@ const {
   RecipeIngredient,
   Tag,
   MealType,
-} = require("../models");
-const CreateRecipeDto = require("../dtos/create-recipe-dto");
-const Ingredient = require("../models/ingredient");
+} = require("../../models");
+const CreateRecipeDto = require("../../dtos/create-recipe-dto");
+const Ingredient = require("../../models/ingredient");
 
 class RecipeRepositry extends BaseRepository {
   constructor() {
