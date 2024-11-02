@@ -37,31 +37,49 @@ class RecipeService extends BaseService {
    * @returns {Promise<RecipeDto>} - dto of the newly created recipe
    */
   async createRecipe(createRecipeDto) {
-    // step 1 - creating recipe
-    const { tags, mealTypes, cuisines, ingredients, ...rest } = createRecipeDto;
+    return this.unitOfWork.execute(async () => {
+      const { tags, mealTypes, cuisines, ingredients, ...rest } =
+        createRecipeDto;
+      const recipeRepo = this.repositroy;
+      const transaction = this.unitOfWork.transaction;
+      const newRecipe = await this.#createRecipeRecord(rest, transaction);
+
+      await this.#addRecipeData(newRecipe, "tag", tags, "addTags", transaction);
+      await this.#addRecipeData(
+        newRecipe,
+        "cuisine",
+        cuisines,
+        "addCuisines",
+        transaction
+      );
+      await this.#addRecipeData(
+        newRecipe,
+        "meal",
+        mealTypes,
+        "addMeals",
+        transaction
+      );
+
+      await this.#addRecipeIngredients(ingredients, newRecipe.id, transaction);
+      return new RecipeDto({
+        id: newRecipe.id,
+        meals: mealTypes,
+        ...createRecipeDto,
+      });
+    });
+  }
+
+  async #createRecipeRecord(recipeData, transaction) {
     const recipeRepo = this.unitOfWork.getRepository("recipe");
     const instructionRepo = this.unitOfWork.getRepository("instruction");
-    const transaction = await this.unitOfWork.beginTransaction();
-    const newRecipe = await recipeRepo.createRecord(rest, {
+    const newRecipe = await recipeRepo.createRecord(recipeData, {
       transaction,
       include: [{ model: instructionRepo.model, as: "instructions" }],
     });
+    return newRecipe;
+  }
 
-    // step 2 - adding meals, tags and cuisines
-    const recipeTags = await this.unitOfWork
-      .getRepository("tag")
-      .findAll({ where: { type: tags }, transaction });
-    await recipeRepo.addTags(newRecipe, recipeTags, transaction);
-    const recipeCuisines = await this.unitOfWork
-      .getRepository("cuisine")
-      .findAll({ where: { type: cuisines }, transaction });
-    await recipeRepo.addCuisines(newRecipe, recipeCuisines, transaction);
-    const recipeMeals = await this.unitOfWork
-      .getRepository("meal")
-      .findAll({ where: { type: mealTypes }, transaction });
-    await recipeRepo.addMeals(newRecipe, recipeMeals, transaction);
-
-    // step 3 - add ingredients
+  async #addRecipeIngredients(ingredients, recipeId, transaction) {
     const ingredientPromises = ingredients.map(async (ing) => {
       const { ingredient, ...rest } = ing;
       const ingRecord = await this.unitOfWork
@@ -70,21 +88,28 @@ class RecipeService extends BaseService {
       return this.unitOfWork.getRepository("recipeIngrdient").createRecord(
         {
           ...rest,
-          recipeId: newRecipe.id,
+          recipeId,
           ingredientId: ingRecord.id,
         },
         { transaction }
       );
     });
     await Promise.all(ingredientPromises);
-    await this.unitOfWork.commitTransaction();
+  }
 
-    //step 4 - return dto
-    return new RecipeDto({
-      id: newRecipe.id,
-      meals: mealTypes,
-      ...createRecipeDto,
+  async #addRecipeData(
+    recipe,
+    recipeInfoKey,
+    recipeInputData,
+    methodName,
+    transaction
+  ) {
+    const repository = this.unitOfWork.getRepository(recipeInfoKey);
+    const relatedRecipeData = await repository.findAll({
+      where: { type: recipeInputData },
+      transaction,
     });
+    this.repositroy[methodName](recipe, relatedRecipeData, transaction);
   }
 }
 

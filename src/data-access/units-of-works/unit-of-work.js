@@ -46,6 +46,17 @@ class UnitOfWork {
     await this.transaction.rollback();
     this.transaction = null;
   }
+
+  async execute(callback) {
+    await this.beginTransaction();
+    try {
+      const result = await callback();
+      await this.commitTransaction();
+      return result;
+    } catch (err) {
+      await this.rollbackTransaction();
+    }
+  }
 }
 
 module.exports = UnitOfWork;
