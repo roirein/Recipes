@@ -25,7 +25,6 @@ class BaseRepository {
    */
   async createRecord(recordData, query = {}) {
     //type of record data will be decided later
-    console.log(recordData, query);
     return await this.#model.create(recordData, query);
   }
 
